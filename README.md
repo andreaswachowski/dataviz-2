@@ -48,5 +48,8 @@ Further inspiration was taken from [David Graus' blog entry
 "Force-Directed Graphs: Playing around with
 D3.js"](http://graus.nu/blog/force-directed-graphs-playing-around-with-d3-js/).
 
+Finally, Scott
+Murray's “Interactive Data Visualization for the Web” (<a href="http://chimera.labs.oreilly.com/books/1230000000345/index.html">online version</a>, <a href="http://shop.oreilly.com/product/0636920026938.do">O'Reilly</a>, <a href="http://www.amazon.com/Interactive-Data-Visualization-Scott-Murray/dp/1449339735/">Amazon</a>) was very helpful.
+
 ## Ideas for improvement
   * Automatically center and scale the graph appropriately during first load
