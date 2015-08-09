@@ -4,6 +4,9 @@ A force-directed layout visualization created with [D3.js](http://d3js.org/)
 for an assignment during [Coursera's data visualization
 course](https://www.coursera.org/course/datavisualization).
 
+To experiment, clone the repo and open `index.html` in your browser (try zoom
+and/or drag the graph, and mouseover the nodes).
+
 The result can look similar to this:
 
 <img src="https://github.com/andreaswachowski/dataviz-2/blob/master/screenshot.png" height=auto width="100%">
@@ -36,8 +39,6 @@ blue for conservative, and grey for neutral, but that can be debated (see
 colour"](https://en.wikipedia.org/wiki/Political_colour)).
 
 The node's size increases with its number of edges.
-
-Zooming and dragging is possible. Mouse over a node to see the 
 
 ### Development
 Development started with [d3noob's block #5141278](http://bl.ocks.org/d3noob/5141278), which is explained in detail in
