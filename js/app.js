@@ -6,10 +6,12 @@ var nodes = {};
 // Compute the distinct nodes from the links.
 links.forEach(function(link) {
     link.source = nodes[link.source] ||
-        (nodes[link.source] = {name: link.source});
+        (nodes[link.source] = {name: link.source, followers : 0 });
     link.target = nodes[link.target] ||
-        (nodes[link.target] = {name: link.target});
-    link.value = +link.value;
+        (nodes[link.target] = {name: link.target, followers : 0 });
+    // Adding up the followers as below assumes that the
+    // provided links are unique:
+    nodes[link.target.name].followers += 1;
 });
 
 var width = 960,
@@ -57,9 +59,15 @@ var node = svg.selectAll(".node")
     .attr("class", "node")
     .call(force.drag);
 
-// add the nodes
+// add the nodes with a tooltop
 node.append("circle")
-    .attr("r", 5);
+    .attr("r", 5)
+    // TODO Use larger circles for more followers, but the circles must be limited,
+    // between 5 and, say, 30 pixels. Perhaps a logarithmic scale?
+    .append("title")
+    .text(function(d) {
+        return "name: " + d.name + ", followers: " + d.followers;
+    });
 
 // add the text
 // node.append("text")
