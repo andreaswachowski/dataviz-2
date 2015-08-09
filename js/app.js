@@ -66,7 +66,7 @@ var node = svg.selectAll(".node")
     .enter().append("g")
     .attr("class", "node");
 
-// add the nodes with a tooltip
+// add the nodes
 node.append("circle")
     .attr("r", function(d) {
         return Math.max(d.weight/2,5);
@@ -77,9 +77,21 @@ node.append("circle")
     .style("stroke", function(d) {
         return orientationColor[d.value].stroke;
     })
-    .append("title")
-    .text(function(d) {
-        return "title: " + d.label + ", # edges: " + d.weight;
+    .on("mouseover", function(d) {
+        var xPos = parseFloat(d3.select(this).attr("x")) + 10;
+        var yPos = parseFloat(d3.select(this).attr("y")) + 20;
+
+        d3.select("#tooltip")
+            .style("left", xPos + "px")
+            .style("top", yPos + "px");
+
+        d3.select("#title").text(d.label);
+        d3.select("#value").text(d.weight);
+
+        d3.select("#tooltip").classed("hidden", false);
+    })
+    .on("mouseout", function() {
+        d3.select("#tooltip").classed("hidden", true);
     });
 
 // add the text
