@@ -49,6 +49,4 @@ Further inspiration was taken from [David Graus' blog entry
 D3.js"](http://graus.nu/blog/force-directed-graphs-playing-around-with-d3-js/).
 
 ## Ideas for improvement
-  * Add a legend
-  * Make tooltips nicer
   * Automatically center and scale the graph appropriately during first load
