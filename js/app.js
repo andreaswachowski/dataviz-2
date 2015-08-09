@@ -1,19 +1,35 @@
-// get the data
-d3.csv("force.csv", function(error, links) {
+// The original GML data
+// (https://en.wikipedia.org/wiki/Graph_Modelling_Language)
+// includes the following attribution:
+// Creator "Mark Newman on Wed Oct 18 16:42:04 2006"
 
-var nodes = {};
+// It was manually (ie with vim (http://www.vim.org/)) converted to JSON.
+
+d3.json("js/polbooks.json", function(error, graph) {
+
+if (error) return console.warn(error);
+
+var orientationColor = {
+    "c" /* conservative */ : {
+        fill: "#0808B9",
+        stroke: "#FFF" // darkblue
+    },
+
+    "l" /* liberal */ : {
+        fill: "#FD0", // yellow
+        stroke: "#FFF"
+    },
+
+    "n" /* neutral */ : {
+        fill: "#A9A9A9", // darkgray
+        stroke: "#FFF"
+    }
+};
+
+var nodes = graph.nodes;
 
 // Compute the distinct nodes from the links.
-links.forEach(function(link) {
-    link.source = nodes[link.source] ||
-        (nodes[link.source] = {name: link.source, outdegree: 0, indegree : 0 });
-    link.target = nodes[link.target] ||
-        (nodes[link.target] = {name: link.target, outdegree: 0, indegree : 0 });
-    // Adding up the indegree as below assumes that the
-    // provided links are unique:
-    nodes[link.source.name].outdegree += 1;
-    nodes[link.target.name].indegree += 1;
-});
+var links = graph.edges;
 
 var width = 960,
     height = 500;
@@ -27,54 +43,50 @@ var force = d3.layout.force()
     .on("tick", tick)
     .start();
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#graph").append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .call(d3.behavior.zoom().on("zoom", redraw))
+    .call(d3.behavior.drag());
 
-// build the arrow.
-svg.append("svg:defs").selectAll("marker")
-    .data(["end"])      // Different link/path types can be defined here
-  .enter().append("svg:marker")    // This section adds in the arrows
-    .attr("id", String)
-    .attr("viewBox", "0 -5 10 10")
-    .attr("refX", 15)
-    .attr("refY", -1.5)
-    .attr("markerWidth", 6)
-    .attr("markerHeight", 6)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
+function redraw() {
+    svg.attr("transform","translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+}
 
 // add the links and the arrows
 var path = svg.append("svg:g").selectAll("path")
     .data(force.links())
-  .enter().append("svg:path")
-//    .attr("class", function(d) { return "link " + d.type; })
-    .attr("class", "link")
-    .attr("marker-end", "url(#end)");
+    .enter().append("svg:path")
+    .attr("class", "link");
+
 
 // define the nodes
 var node = svg.selectAll(".node")
     .data(force.nodes())
-  .enter().append("g")
-    .attr("class", "node")
-    .call(force.drag);
+    .enter().append("g")
+    .attr("class", "node");
 
-// add the nodes with a tooltop
+// add the nodes with a tooltip
 node.append("circle")
-    .attr("r", 5)
-    // TODO Use larger circles for more indegree, but the circles must be limited,
-    // between 5 and, say, 30 pixels. Perhaps a logarithmic scale?
+    .attr("r", function(d) {
+        return Math.max(d.weight/2,5);
+    })
+    .style("fill", function(d) {
+        return orientationColor[d.value].fill;
+    })
+    .style("stroke", function(d) {
+        return orientationColor[d.value].stroke;
+    })
     .append("title")
     .text(function(d) {
-        return "name: " + d.name + ", followers: " + d.indegree + ", following: " + d.outdegree;
+        return "title: " + d.label + ", # edges: " + d.weight;
     });
 
 // add the text
 // node.append("text")
 //     .attr("x", 12)
 //     .attr("dy", ".35em")
-//     .text(function(d) { return d.name; });
+//     .text(function(d) { return d.label; });
 
 // add the curvy lines
 function tick() {
